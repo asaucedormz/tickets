@@ -1,18 +1,18 @@
-const {
-    io
-} = require('../server');
-const {
-    TicketControl
-} = require('../classes/ticket-control');
+const { io } = require('../server');
+const { TicketControl } = require('../classes/ticket-control');
+
 
 const ticketControl = new TicketControl();
+
+
 
 io.on('connection', (client) => {
 
     client.on('siguienteTicket', (data, callback) => {
-        let siguiente = ticketControl.siguiente();
-        console.log(siguiente);
 
+        let siguiente = ticketControl.siguiente();
+
+        console.log(siguiente);
         callback(siguiente);
     });
 
@@ -23,6 +23,7 @@ io.on('connection', (client) => {
     });
 
     client.on('atenderTicket', (data, callback) => {
+
         if (!data.escritorio) {
             return callback({
                 err: true,
@@ -33,16 +34,18 @@ io.on('connection', (client) => {
 
         let atenderTicket = ticketControl.atenderTicket(data.escritorio);
 
+
         callback(atenderTicket);
 
-        //ACTUALIZAR/NOTIFICAR CAMBIOS EN LSO ULTIMOS 4
-
-
+        // actualizar/ notificar cambios en los ULTIMOS 4
         client.broadcast.emit('ultimos4', {
-            ultimos4: ticketControl.getUltimos4(),
-            actual: ticketControl.getUltimoTicket(),
+            ultimos4: ticketControl.getUltimos4()
         });
 
+
     });
+
+
+
 
 });
